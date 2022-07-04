@@ -1,10 +1,5 @@
 #pragma once
 
-#include "../../../Dep/XV_Utilities/Include/Utilities/Types.h"
-#include "../../../Dep/XV_Utilities/Include/Utilities/Typelist/Typelist.h"
-#include "../../../Dep/XV_Utilities/Include/Utilities/STL_C/Span.h"
-#include "../Core/Settings.h"
-#include "FWD.h"
 
 /**
  * @brief
@@ -97,5 +92,15 @@ namespace XV::ECS::Component::Concepts
     return true;
   }
   (List());
+
+}
+
+namespace XV::ECS::Concepts
+{
+  template <typename C>
+  concept ComponentReference = XV::Concepts::IsReference<C> && Component::Concepts::IsDataComponent<C>;
+
+  template <typename C>
+  concept ComponentPointer = XV::Concepts::IsPointer<C> && Component::Concepts::IsDataComponent<C>;
 
 }

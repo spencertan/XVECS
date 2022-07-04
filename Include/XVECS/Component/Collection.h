@@ -1,18 +1,26 @@
 #pragma once
 
-#include "../../../Dep/XV_Utilities/Include/Utilities/STL_C/UnorderedMap.h"
-#include "../../../Dep/XV_Utilities/Include/Utilities/Helper/Singleton.h"
-
-#include "Descriptor.h"
-
 namespace XV::ECS::Component
 {
 
-  struct Collection final : Singleton<Collection>
+  class Collection final : public Singleton<Collection>
   {
     using DescriptorMap = unordered_map<Component::ID, Ptr<const Descriptor>>;
     using DescriptorQuery = vector<Ptr<const Descriptor>>;
 
+    friend class Singleton<Collection>;
+    Collection() = default;
+    ~Collection() = default;
+
+    Descriptors m_collection{};
+    DescriptorMap m_map;
+    Signatures m_data_bits;
+    Signatures m_tag_bits;
+    Signatures m_exclusive_bits;
+    Signatures m_singleton_bits;
+    bool m_lock;
+
+  public:
     template <Concepts::IsComponent C>
     inline void Register();
 
@@ -33,21 +41,8 @@ namespace XV::ECS::Component
     inline u32 CountExclusive(const Signatures &signature) const noexcept;
     inline u32 CountSingleton(const Signatures &signature) const noexcept;
 
-    inline Ptr<const Descriptor> Get(const Component::ID &id) const noexcept;
-    inline Descriptors GenerateDescriptors(const Signatures& signatures) const noexcept;
-
-  private:
-    friend class Singleton<Collection>;
-    Collection() = default;
-    ~Collection() = default;
-
-    Descriptors m_collection{};
-    DescriptorMap m_map;
-    Signatures m_data_bits;
-    Signatures m_tag_bits;
-    Signatures m_exclusive_bits;
-    Signatures m_singleton_bits;
-    bool m_lock;
+    inline Ptr<const Descriptor> GetDescriptor(const Component::ID &id) const noexcept;
+    inline Descriptors GenerateDescriptors(const Signatures &signatures) const noexcept;
   };
 
 }

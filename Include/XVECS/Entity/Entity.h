@@ -1,7 +1,7 @@
 #pragma once
+
 #include <bit>
-#include "../Component/Types.h"
-#include "../Archetype/FWD.h"
+
 namespace XV::ECS
 {
 
@@ -61,7 +61,7 @@ namespace XV::ECS
      */
 
     struct Data;
-    struct Manager;
+    class Manager;
 
     /**
      * @brief

@@ -1,17 +1,15 @@
-#include "Instance.h"
-
 namespace XV::ECS::Query
 {
 
   bool Instance::Compare(const Component::Signatures &signature) const noexcept
   {
-    if (none & signature)
+    if (m_none & signature)
       return false;
 
-    if (((all & signature) ^ all))
+    if (((m_all & signature) ^ m_all))
       return false;
 
-    if (any & signature || !any.any())
+    if (m_any & signature || !m_any.any())
       return true;
 
     return false;
@@ -19,16 +17,16 @@ namespace XV::ECS::Query
 
   bool Instance::Compare(const Component::Signatures &signature, const Component::Signatures &exclusive) const noexcept
   {
-    if (none & signature)
+    if (m_none & signature)
       return false;
 
-    if (((all & signature) ^ all))
+    if (((m_all & signature) ^ m_all))
       return false;
 
-    if (((all | any) & exclusive) ^ exclusive)
+    if (((m_all | m_any) & exclusive) ^ exclusive)
       return false;
 
-    if (any & signature || !any.any())
+    if (m_any & signature || !m_any.any())
       return true;
 
     return false;
@@ -41,19 +39,19 @@ namespace XV::ECS::Query
   {
     [&]<Component::Concepts::IsComponent... Cs>(All<Cs...>)
     {
-      (m_all.set(Component::info<Cs>.m_bit_index), ...);
+      (m_all.set(Component::info<Cs>.bit_index), ...);
     }
     (AllComponents());
 
     [&]<Component::Concepts::IsComponent... Cs>(Any<Cs...>)
     {
-      (m_any.set(Component::info<Cs>.m_bit_index), ...);
+      (m_any.set(Component::info<Cs>.bit_index), ...);
     }
     (AnyComponents());
 
     [&]<Component::Concepts::IsComponent... Cs>(None<Cs...>)
     {
-      (m_none.set(Component::info<Cs>.m_bit_index), ...);
+      (m_none.set(Component::info<Cs>.bit_index), ...);
     }
     (NoneComponents());
     return *this;
@@ -68,21 +66,21 @@ namespace XV::ECS::Query
   template <Component::Concepts::IsComponent... Cs>
   Instance &Instance::AllOf() noexcept
   {
-    (m_all.set(Component::info<Cs>.m_bit_index), ...);
+    (m_all.set(Component::info<Cs>.bit_index), ...);
     return *this;
   }
 
   template <Component::Concepts::IsComponent... Cs>
   Instance &Instance::AnyOf() noexcept
   {
-    (m_any.set(Component::info<Cs>.m_bit_index), ...);
+    (m_any.set(Component::info<Cs>.bit_index), ...);
     return *this;
   }
 
   template <Component::Concepts::IsComponent... Cs>
   Instance &Instance::NoneOf() noexcept
   {
-    (m_none.set(Component::info<Cs>.m_bit_index), ...);
+    (m_none.set(Component::info<Cs>.bit_index), ...);
     return *this;
   }
 
@@ -110,13 +108,12 @@ namespace XV::ECS::Query
   template <ECS::Concepts::ComponentReference C>
   void Instance::FunctionSet() noexcept
   {
-    m_all.set(Component::info<C>.m_bit_index);
+    m_all.set(Component::info<C>.bit_index);
   }
 
   template <ECS::Concepts::ComponentPointer C>
-  requires(!XV::ECS::Component::Concepts::SingletonComponent<C>)
-  void Instance::FunctionSet() noexcept
+  requires(!XV::ECS::Component::Concepts::SingletonComponent<C>) void Instance::FunctionSet() noexcept
   {
-    m_any.set(Component::info<C>.m_bit_index);
+    m_any.set(Component::info<C>.bit_index);
   }
 }

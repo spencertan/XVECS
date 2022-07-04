@@ -2,47 +2,31 @@
 
 /**
  * @brief 
- * * Dependencies Declaration
- */
-
-#include "Dependencies.h"
-
-
-/**
- * @brief 
- * * Alias Declaration
- */
-
-namespace XV
-{
-  template <typename... Ts>
-  using CList = Typelist<Ts...>;
-
-  template <typename... Ts>
-  using CListAdd = CList<Ts...>;
-
-  template <typename... Ts>
-  using CListRemove = CList<Ts...>;
-
-  template <typename... Ts>
-  using SList = Typelist<Ts...>;
-
-  template <typename... Ts>
-  using EList = Typelist<Ts...>;
-}
-
-/**
- * @brief 
  * * Files Declaration
+ * TODO: Clean up header includes in the future
  */
+#include "Dependencies.h"
+#include "../Core/Settings.h"
+#include "../Core/Declaration.h"
+#include "Component/Declaration.h"
+#include "Entity/Declaration.h"
+#include "Query/Declaration.h"
+#include "Archetype/Declaration.h"
+#include "World/Instance.h"
 
-#include "Core/Settings.h"
-#include "Declaration.h"
-
-
-
-
-
+/**
+ * @brief 
+ * * Inline File Declaration
+ */
+#ifdef XV_ECS_IMPL
+#include "Component/Descriptor.inl"
+#include "Component/Collection.inl"
+#include "Entity/Manager.inl"
+#include "Query/Instance.inl"
+#include "Archetype/Pool.inl"
+#include "Archetype/Instance.inl"
+#include "Archetype/Manager.inl"
+#endif
 
 
 

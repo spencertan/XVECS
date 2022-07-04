@@ -1,7 +1,5 @@
 #pragma once
 
-#include "../Component/Types.h"
-
 namespace XV::ECS::Query
 {
 

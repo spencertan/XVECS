@@ -5,53 +5,67 @@
 
 namespace XV::ECS::System
 {
-  struct Overrides
-{
-  static constexpr auto info = Type::Update {};
-  using All = Query::All<>;
-  using Any = Query::Any<>;
-  using None = Query::None<>;
-
-  using Events = tuplet::tuple<>;
-
-  inline Overrides( World::Instance &world ) noexcept : world( world )
-  {}
-
-  void OnCreate() noexcept
-  {}
-  void OnStart() noexcept
-  {}
-  void OnFrameStart() noexcept
-  {}
-  void OnPreUpdate() noexcept
-  {}
-  void OnUpdate() noexcept
-  {}
-  void OnPostUpdate() noexcept
-  {}
-  void OnPostStructuralChanges() noexcept
-  {}
-  void OnFrameEnd() noexcept
-  {}
-  void OnEnd() noexcept
-  {}
-  void OnDestroy() noexcept
-  {}
-  void OnPause() noexcept
+  class Overrides
   {
-    paused = true;
-  }
-  void OnResume() noexcept
-  {
-    paused = false;
-  }
-  void OnEvent( ... ) noexcept
-  {}
-  void OnNotify( Entity & ) noexcept
-  {}
+    static constexpr auto info = Type::Update{};
+    using All = Query::All<>;
+    using Any = Query::Any<>;
+    using None = Query::None<>;
 
-  World::Instance &world;
-  bool paused { true };
+    using Events = tuplet::tuple<>;
 
-};
+  public:
+    inline Overrides(World::Instance &world) noexcept : world(world)
+    {
+    }
+
+    void OnCreate() noexcept
+    {
+    }
+    void OnStart() noexcept
+    {
+    }
+    void OnFrameStart() noexcept
+    {
+    }
+    void OnPreUpdate() noexcept
+    {
+    }
+    void OnUpdate() noexcept
+    {
+    }
+    void OnPostUpdate() noexcept
+    {
+    }
+    void OnPostStructuralChanges() noexcept
+    {
+    }
+    void OnFrameEnd() noexcept
+    {
+    }
+    void OnEnd() noexcept
+    {
+    }
+    void OnDestroy() noexcept
+    {
+    }
+    void OnPause() noexcept
+    {
+      m_paused = true;
+    }
+    void OnResume() noexcept
+    {
+      m_paused = false;
+    }
+    void OnEvent(...) noexcept
+    {
+    }
+    void OnNotify(Entity &) noexcept
+    {
+    }
+
+  protected:
+    World::Instance &m_world;
+    bool m_paused{true};
+  };
 }

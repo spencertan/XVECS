@@ -1,5 +1,3 @@
-#include "../../../dep/XV_Utilities/Include/Utilities/Enumerate.h"
-#include <cassert>
 namespace XV::ECS::Component
 {
 
@@ -112,7 +110,7 @@ namespace XV::ECS::Component
     return sig.count();
   }
 
-  Ptr<const Descriptor> Collection::Get(const Component::ID &id) const noexcept
+  Ptr<const Descriptor> Collection::GetDescriptor(const Component::ID &id) const noexcept
   {
     auto it = m_map.find(id);
     if (it != m_map.end())

@@ -1,8 +1,5 @@
 #pragma once
 
-#include "../../../Dep/XV_Utilities/Include/Utilities/STL_C/Vector.h"
-#include "../../../Dep/XV_Utilities/Include/Utilities/Traits/Tuple.h"
-#include "Types.h"
 namespace XV::ECS::Component
 {
 

@@ -1,5 +1,3 @@
-#include "Manager.h"
-#include <cassert>
 namespace XV::ECS
 {
   Entity::Manager::Manager() noexcept
@@ -11,20 +9,20 @@ namespace XV::ECS
   {
     for (int i = 0, end = Settings::max_entities - 2; i < end; ++i)
     {
-      entities[i].pool_index = i + 1;
-      entities[i].validation.value = 2147483649u;
-      entities[i].archetype = nullptr;
-      entities[i].pool = nullptr;
+      m_entities[i].pool_index = i + 1;
+      m_entities[i].validation.value = 2147483649u;
+      m_entities[i].archetype = nullptr;
+      m_entities[i].pool = nullptr;
     }
-    entities[Settings::max_entities - 1].pool_index = -1;
+    m_entities[Settings::max_entities - 1].pool_index = -1;
 
-    count = max = head = 0;
+    m_count = m_max = m_head = 0;
   }
 
   const Entity::Data &Entity::Manager::Get(Entity entity) const noexcept
   {
     assert(entity.Valid());
-    auto &entry = entities[entity.GlobalIndex()];
+    auto &entry = m_entities[entity.GlobalIndex()];
     assert(entry.validation == entity.details.validation);
     return entry;
   }
@@ -35,50 +33,50 @@ namespace XV::ECS
   }
 
   Entity Entity::Manager::Allocate(Archetype::Instance &archetype,
-                                   Archetype::Pool::Instance &pool,
+                                   Archetype::Pool &pool,
                                    i32 pool_index) noexcept
   {
-    assert(head >= 0);
-    u32 i = static_cast<u32>(head);
-    auto &entry = entities[i];
-    head = entry.pool_index;
+    assert(m_head >= 0);
+    u32 i = static_cast<u32>(m_head);
+    auto &entry = m_entities[i];
+    m_head = entry.pool_index;
 
     entry.archetype = &archetype;
     entry.pool = &pool;
     entry.pool_index = pool_index;
     entry.validation.Zombie(false);
 
-    if (i > max)
-      max = i;
+    if (i > m_max)
+      m_max = i;
 
-    ++count;
+    ++m_count;
     return Entity(static_cast<u32>(i), entry.validation);
   }
 
   void Entity::Manager::Delete(u32 index) noexcept
   {
-    auto &entry = entities[index];
+    auto &entry = m_entities[index];
     entry.validation.IncrementVersion();
     entry.validation.Zombie(true);
-    entry.pool_index = head;
-    head = static_cast<i32>(index);
-    --count;
+    entry.pool_index = m_head;
+    m_head = static_cast<i32>(index);
+    --m_count;
   }
 
   void Entity::Manager::Delete(u32 index, const Entity &entity) noexcept
   {
-    auto &entry = entities[index];
-    entities[entity.GlobalIndex()].pool_index = entry.pool_index;
+    auto &entry = m_entities[index];
+    m_entities[entity.GlobalIndex()].pool_index = entry.pool_index;
     entry.validation.IncrementVersion();
     entry.validation.Zombie(true);
-    entry.pool_index = head;
-    head = static_cast<i32>(index);
-    --count;
+    entry.pool_index = m_head;
+    m_head = static_cast<i32>(index);
+    --m_count;
   }
 
   void Entity::Manager::Move(i32 index, const Entity &entity) noexcept
   {
-    entities[entity.GlobalIndex()].pool_index = index;
+    m_entities[entity.GlobalIndex()].pool_index = index;
   }
 
 }

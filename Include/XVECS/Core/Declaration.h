@@ -5,9 +5,9 @@
  * * World Declaration
  */
 
-namespace Xivi::ECS::World
+namespace XV::ECS::World
 {
-  struct Instance;
+  class Instance;
 }
 
 /**
@@ -17,6 +17,7 @@ namespace Xivi::ECS::World
 
 namespace XV::ECS::Component
 {
+
   namespace Details
   {
     struct ComponentID
@@ -24,19 +25,28 @@ namespace XV::ECS::Component
     };
   }
 
-  using ID = GUID<struct ComponentID>;
 
-  namespace Descriptor
-  {
-    struct Instance;
-    struct Manager;
-  }
 
   namespace Type
   {
-    struct Tag;
     struct Data;
+    struct Tag;
+    struct Exclusive;
+    struct Singleton;
   }
+
+  struct Descriptor;
+  class Collection;
+
+  using ID = GUID<struct ComponentID>;
+  using Descriptors= vector<Ptr<const Descriptor>>;
+
+}
+
+namespace XV::ECS::Component
+{
+  using Signatures = XV::CBitset<Settings::max_components>;
+  using DescriptorSpan = span<const Ptr<const Component::Descriptor>>;
 }
 
 /**
@@ -54,8 +64,8 @@ namespace XV::ECS::System
   }
 
   using ID = GUID<struct SystemID>;
-  struct Instance;
-  struct Manager;
+  class Instance;
+  class Manager;
 
   namespace Concepts
   {
@@ -78,35 +88,9 @@ namespace XV::ECS::System
 namespace XV::ECS::Archetype
 {
   using ID = GUID<struct ArchetypeID>;
-  struct Instance;
-  struct Manager;
-}
-
-/**
- * @brief
- * * Pool Declaration
- */
-
-namespace XV::ECS::Pool
-{
-  using ID = GUID<struct PoolID>;
-  struct Instance;
-  struct Index
-  {
-    i32 m_value{0};
-    auto operator<=>(const Index &) const = default;
-  };
-}
-
-/**
- * @brief
- * * Family Declaration
- */
-
-namespace XV::ECS::Pool::Family
-{
-  using ID = GUID<struct FamilyID>;
-  struct Instance;
+  class Instance;
+  class Manager;
+  class Pool;
 }
 
 /**
@@ -132,7 +116,7 @@ namespace XV::ECS::Event
 
 namespace Xivi::ECS::Query
 {
-  struct Instance;
+  class Instance;
 }
 
 /**
@@ -141,11 +125,10 @@ namespace Xivi::ECS::Query
  */
 namespace XV::ECS
 {
-  struct Entity;
-  struct ReferenceCount;
+  union Entity;
 
   using Signature = XV::CBitset<Settings::max_components>;
-  using DescriptorSpan = span<const Ptr<const Component::Descriptor::Instance>>;
+  using DescriptorSpan = span<const Ptr<const Component::Descriptor>>;
   using DataSpan = span<Ptr<byte>>;
   using ConstDataSpan = span<const Ptr<const byte>>;
   using EntitySpan = span<Entity>;
@@ -159,4 +142,22 @@ namespace XV::ECS
       count += std::popcount(signature.data()[--x]);
     return count;
   }
+}
+
+namespace XV
+{
+  template <typename... Ts>
+  using CList = Typelist<Ts...>;
+
+  template <typename... Ts>
+  using CListAdd = CList<Ts...>;
+
+  template <typename... Ts>
+  using CListRemove = CList<Ts...>;
+
+  template <typename... Ts>
+  using SList = Typelist<Ts...>;
+
+  template <typename... Ts>
+  using EList = Typelist<Ts...>;
 }

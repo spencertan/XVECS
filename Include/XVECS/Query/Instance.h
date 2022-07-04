@@ -1,16 +1,13 @@
 #pragma once
 
-#include "../Core/Concepts.h"
-#include "Types.h"
-
 namespace XV::ECS::Query
 {
 
-  struct Instance final
+  class Instance final
   {
-    Component::Signatures all;
-    Component::Signatures any;
-    Component::Signatures none;
+    Component::Signatures m_all;
+    Component::Signatures m_any;
+    Component::Signatures m_none;
 
     Instance() noexcept = default;
     Instance(const Instance &rhs) = default;
